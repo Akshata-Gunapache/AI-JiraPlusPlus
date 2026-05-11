@@ -14,13 +14,13 @@ public class ProjectController {
     @Autowired
     private ProjectRepository projectRepository;
 
-    @GetMapping
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
-    }
-
     @PostMapping
     public Project createProject(@RequestBody Project project) {
         return projectRepository.save(project);
+    }
+
+    @GetMapping
+    public List<Project> getProjects() {
+        return projectRepository.findAll();
     }
 }
