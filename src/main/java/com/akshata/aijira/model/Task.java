@@ -1,11 +1,14 @@
 package com.akshata.aijira.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Task {
 
     @Id
@@ -13,6 +16,7 @@ public class Task {
     private Long id;
 
     private String title;
+
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -21,11 +25,11 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    private LocalDateTime deadline;
+    private LocalDate dueDate;
+
+    @ManyToOne
+    private User assignedTo;
 
     @ManyToOne
     private Project project;
-
-    @ManyToOne
-    private User assignee;
 }

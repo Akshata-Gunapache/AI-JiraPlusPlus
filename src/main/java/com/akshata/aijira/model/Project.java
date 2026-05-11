@@ -1,11 +1,12 @@
 package com.akshata.aijira.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Project {
 
     @Id
@@ -14,6 +15,5 @@ public class Project {
 
     private String name;
 
-    @ManyToMany
-    private List<User> members;
+    private String description;
 }
