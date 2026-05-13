@@ -7,6 +7,7 @@ import com.akshata.aijira.repository.ProjectRepository;
 import com.akshata.aijira.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ public class TaskService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public Task createTask(TaskRequest request) {
 
@@ -32,7 +36,11 @@ public class TaskService {
         task.setStatus(request.getStatus());
         task.setProject(project);
 
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        messagingTemplate.convertAndSend("/topic/tasks", savedTask);
+
+        return savedTask;
     }
 
     public List<Task> getAllTasks() {
