@@ -1,7 +1,10 @@
 package com.akshata.aijira.service;
 
 import com.akshata.aijira.model.Task;
+import com.akshata.aijira.model.TaskStatus;
+import com.akshata.aijira.model.User;
 import com.akshata.aijira.repository.TaskRepository;
+import com.akshata.aijira.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     public Task createTask(Task task) {
         return taskRepository.save(task);
@@ -36,5 +40,28 @@ public class TaskService {
 
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
+    }
+
+    public Task assignTask(Long taskId, Long userId) {
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        task.setAssignedUser(user);
+
+        return taskRepository.save(task);
+    }
+
+    public Task updateTaskStatus(Long taskId, TaskStatus status) {
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        task.setStatus(status);
+
+        return taskRepository.save(task);
     }
 }

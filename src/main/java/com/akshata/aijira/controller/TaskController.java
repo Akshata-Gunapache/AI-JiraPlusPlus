@@ -4,6 +4,7 @@ import com.akshata.aijira.model.Task;
 import com.akshata.aijira.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import com.akshata.aijira.model.TaskStatus;
 
 import java.util.List;
 
@@ -37,5 +38,19 @@ public class TaskController {
         taskService.deleteTask(id);
 
         return "Task deleted successfully";
+    }
+
+    @PutMapping("/{taskId}/assign/{userId}")
+    public Task assignTask(
+            @PathVariable Long taskId,
+            @PathVariable Long userId) {
+        return taskService.assignTask(taskId, userId);
+    }
+
+    @PutMapping("/{taskId}/status")
+    public Task updateTaskStatus(
+            @PathVariable Long taskId,
+            @RequestParam TaskStatus status) {
+        return taskService.updateTaskStatus(taskId, status);
     }
 }
