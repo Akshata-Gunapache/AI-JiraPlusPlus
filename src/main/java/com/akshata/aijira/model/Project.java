@@ -1,5 +1,6 @@
 package com.akshata.aijira.model;
 
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,9 @@ public class Project {
     private String name;
 
     private String description;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
