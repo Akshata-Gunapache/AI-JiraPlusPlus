@@ -1,15 +1,15 @@
 package com.akshata.aijira.dto;
 
-import com.akshata.aijira.model.Priority;
-import com.akshata.aijira.model.TaskStatus;
-
 public class TaskRequest {
 
     private String title;
     private String description;
-    private Priority priority;
-    private TaskStatus status;
+    private String status;
+    private String priority;
     private Long projectId;
+
+    public TaskRequest() {
+    }
 
     public String getTitle() {
         return title;
@@ -27,20 +27,20 @@ public class TaskRequest {
         this.description = description;
     }
 
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public TaskStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(TaskStatus status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
     public Long getProjectId() {

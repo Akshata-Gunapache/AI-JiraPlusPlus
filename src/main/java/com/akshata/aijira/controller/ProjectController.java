@@ -1,8 +1,8 @@
 package com.akshata.aijira.controller;
 
+import com.akshata.aijira.dto.ProjectRequest;
 import com.akshata.aijira.model.Project;
-import com.akshata.aijira.repository.ProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.akshata.aijira.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,16 +11,19 @@ import java.util.List;
 @RequestMapping("/api/projects")
 public class ProjectController {
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectService projectService;
+
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
-        return projectRepository.save(project);
+    public Project createProject(@RequestBody ProjectRequest request) {
+        return projectService.createProject(request);
     }
 
     @GetMapping
     public List<Project> getProjects() {
-        return projectRepository.findAll();
+        return projectService.getAllProjects();
     }
 }

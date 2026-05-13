@@ -1,49 +1,40 @@
 package com.akshata.aijira.service;
 
-import com.akshata.aijira.dto.TaskRequest;
-import com.akshata.aijira.model.Project;
 import com.akshata.aijira.model.Task;
-import com.akshata.aijira.repository.ProjectRepository;
 import com.akshata.aijira.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
-    public Task createTask(TaskRequest request) {
-
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        Task task = new Task();
-
-        task.setTitle(request.getTitle());
-        task.setDescription(request.getDescription());
-        task.setPriority(request.getPriority());
-        task.setStatus(request.getStatus());
-        task.setProject(project);
-
-        Task savedTask = taskRepository.save(task);
-
-        messagingTemplate.convertAndSend("/topic/tasks", savedTask);
-
-        return savedTask;
+    public Task createTask(Task task) {
+        return taskRepository.save(task);
     }
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
+    }
+
+    public Task updateTask(Long id, Task updatedTask) {
+
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        existingTask.setTitle(updatedTask.getTitle());
+        existingTask.setDescription(updatedTask.getDescription());
+        existingTask.setPriority(updatedTask.getPriority());
+        existingTask.setStatus(updatedTask.getStatus());
+
+        return taskRepository.save(existingTask);
+    }
+
+    public void deleteTask(Long id) {
+        taskRepository.deleteById(id);
     }
 }
