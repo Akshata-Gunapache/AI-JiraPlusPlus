@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
+import com.akshata.aijira.model.Priority;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final AIService aiService;
 
     public Task createTask(Task task) {
 
@@ -25,6 +27,12 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         task.setCreatedBy(user);
+
+        String combinedText = task.getTitle() + " " + task.getDescription();
+
+        String predictedPriority = aiService.predictPriority(combinedText);
+
+        task.setPriority(Priority.valueOf(predictedPriority));
 
         return taskRepository.save(task);
     }
