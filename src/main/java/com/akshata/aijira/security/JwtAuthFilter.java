@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.http.HttpMethod;
+
 import java.io.IOException;
 
 @Component
@@ -25,30 +25,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
+    protected void doFilterInternal(
+            HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
-
-        String authHeader = request.getHeader("Authorization");
-
-        String token = null;
-        String email = null;
-
-        if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+            FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getServletPath();
 
-        if (path.startsWith("/api/auth")) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())
+                || path.startsWith("/api/auth")
+                || path.startsWith("/api/tasks")
+                || path.equals("/")
+                || path.equals("/health")) {
+
             filterChain.doFilter(request, response);
             return;
         }
-        // Check if Authorization header exists
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
+        final String authHeader = request.getHeader("Authorization");
+
+        String email = null;
+        String token = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
 
             try {
@@ -58,7 +57,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        // Authenticate user if email exists
         if (email != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 

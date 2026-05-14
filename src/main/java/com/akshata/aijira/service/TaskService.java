@@ -7,7 +7,7 @@ import com.akshata.aijira.repository.TaskRepository;
 import com.akshata.aijira.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
 @Service
@@ -18,11 +18,22 @@ public class TaskService {
     private final UserRepository userRepository;
 
     public Task createTask(Task task) {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        task.setCreatedBy(user);
+
         return taskRepository.save(task);
     }
 
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return taskRepository.findByCreatedByEmail(email);
     }
 
     public Task updateTask(Long id, Task updatedTask) {
