@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import org.springframework.http.HttpMethod;
 import java.io.IOException;
 
 @Component
@@ -35,6 +35,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = null;
         String email = null;
 
+        if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String path = request.getServletPath();
+
+        if (path.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         // Check if Authorization header exists
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 

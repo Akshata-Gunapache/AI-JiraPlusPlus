@@ -3,6 +3,8 @@ package com.akshata.aijira.controller;
 import com.akshata.aijira.model.Task;
 import com.akshata.aijira.service.TaskService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.akshata.aijira.model.TaskStatus;
 
@@ -48,9 +50,12 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}/status")
-    public Task updateTaskStatus(
+    public ResponseEntity<Task> updateTaskStatus(
             @PathVariable Long taskId,
             @RequestParam TaskStatus status) {
-        return taskService.updateTaskStatus(taskId, status);
+
+        Task updatedTask = taskService.updateTaskStatus(taskId, status);
+
+        return ResponseEntity.ok(updatedTask);
     }
 }
